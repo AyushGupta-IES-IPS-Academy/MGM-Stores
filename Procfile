@@ -1,1 +1,1 @@
-web: cd pos && gunicorn pos.pos.wsgi:application
+web: cd pos && gunicorn pos.wsgi:application
