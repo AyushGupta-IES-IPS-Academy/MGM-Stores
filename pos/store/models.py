@@ -29,6 +29,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    @property
+    def image_url(self):
+        """Return the correct public Supabase URL for the image."""
+        from django.conf import settings
+        if self.image:
+            return f"{settings.MEDIA_URL}{self.image.name}"
+        return ""
 
 class Order(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
