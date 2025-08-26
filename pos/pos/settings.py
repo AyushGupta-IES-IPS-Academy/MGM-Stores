@@ -145,16 +145,21 @@ EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # Supabase Storage config from environment
-AWS_ACCESS_KEY_ID = os.getenv("SUPABASE_ACCESS_KEY")
-AWS_SECRET_ACCESS_KEY = os.getenv("SUPABASE_SECRET_KEY")
-AWS_STORAGE_BUCKET_NAME = os.getenv("SUPABASE_BUCKET_NAME", "product-images")
-SUPABASE_PROJECT_REF = os.getenv("SUPABASE_PROJECT_REF")
+AWS_ACCESS_KEY_ID = config("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = config("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = config("AWS_STORAGE_BUCKET_NAME")
+SUPABASE_PROJECT_REF = config("SUPABASE_PROJECT_REF")
 
 AWS_S3_ENDPOINT_URL = f"https://{SUPABASE_PROJECT_REF}.supabase.co/storage/v1/s3"
-AWS_S3_REGION_NAME = "us-east-1"  # dummy value, required by django-storages
+AWS_S3_REGION_NAME = "us-east-1"  # boto3 requires this
 
-# Use S3 storage for uploaded media
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
-# Public media URL (files will be served from Supabase's public bucket path)
 MEDIA_URL = f"https://{SUPABASE_PROJECT_REF}.supabase.co/storage/v1/object/public/{AWS_STORAGE_BUCKET_NAME}/"
